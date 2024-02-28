@@ -340,7 +340,7 @@ GameObject:
   m_Component:
   - component: {fileID: 251783693}
   m_Layer: 0
-  m_Name: SpawnP
+  m_Name: SpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -880,7 +880,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca26c86489ad6e64f8a447630b7c8f6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefabToSpawn: {fileID: 0}
+  _prefabToSpawn: {fileID: 5607776881668551548, guid: 8100f3bddf6487e4b9f0a7a965a548f3, type: 3}
 --- !u!4 &1718074658
 Transform:
   m_ObjectHideFlags: 0
