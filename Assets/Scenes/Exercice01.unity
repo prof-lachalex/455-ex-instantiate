@@ -1073,6 +1073,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefabToSpawn: {fileID: 5607776881668551548, guid: 8100f3bddf6487e4b9f0a7a965a548f3, type: 3}
+  _spawnTimerInterval: 0.5
 --- !u!4 &1718074658
 Transform:
   m_ObjectHideFlags: 0
