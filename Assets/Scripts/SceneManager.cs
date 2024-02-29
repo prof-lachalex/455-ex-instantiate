@@ -6,22 +6,26 @@ public class SceneManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject _prefabToSpawn;
-    GameObject _spawnPoint;
+    List<Transform> _spawnPoints;
 
     private int _nbObjects;
     // Start is called before the first frame update
     void Start()
     {
         _nbObjects = 0;
-        _spawnPoint = GameObject.Find("SpawnPoint");
+        _spawnPoints = new List<Transform>( GameObject.Find("SpawnPoints").GetComponentsInChildren<Transform>() );
+        if (_spawnPoints.Count == 0)
+        {
+            Debug.LogError("SceneManager: Aucun Spawn point");
+        }
         SpawnOneObject();
     }
 
     private void SpawnOneObject()
     {
-        if (_spawnPoint == null)
+        if (_spawnPoints == null || _spawnPoints.Count == 0)
         {
-            Debug.LogError("SpawnPoint non spécifié");
+            Debug.LogError("SceneManager::SpawnOneObject Aucun Spawn point");
             return;
         }
         if(_prefabToSpawn == null)
@@ -31,7 +35,10 @@ public class SceneManager : MonoBehaviour
         }
 
         _nbObjects++;
-        GameObject.Instantiate(_prefabToSpawn, _spawnPoint.transform.position, _spawnPoint.transform.rotation);
+
+        int spawnIndex = Random.Range(0, _spawnPoints.Count);
+
+        GameObject.Instantiate(_prefabToSpawn, _spawnPoints[spawnIndex].transform.position, _spawnPoints[spawnIndex].transform.rotation);
     }
 
     // Update is called once per frame
