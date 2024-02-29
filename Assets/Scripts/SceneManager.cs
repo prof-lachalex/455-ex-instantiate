@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class SceneManager : MonoBehaviour
@@ -9,6 +10,8 @@ public class SceneManager : MonoBehaviour
     List<Transform> _spawnPoints;
 
     private int _nbObjects;
+    TextMeshProUGUI _objectCounterText;
+
     private float _timer;
     [SerializeField]
     private float _spawnTimerInterval;
@@ -23,6 +26,13 @@ public class SceneManager : MonoBehaviour
         {
             Debug.LogError("SceneManager: Aucun Spawn point");
         }
+
+        _objectCounterText = GameObject.Find("ObjectCounterText").GetComponent<TextMeshProUGUI>();
+        if(_objectCounterText == null)
+        {
+            Debug.LogError("SceneManager: TMPro pour le compteur mal ou pas spécifié");
+        }
+        UpdateObjectCounter();
     }
 
     private void SpawnOneObject()
@@ -39,10 +49,15 @@ public class SceneManager : MonoBehaviour
         }
 
         _nbObjects++;
-
+        UpdateObjectCounter();
         int spawnIndex = Random.Range(0, _spawnPoints.Count);
 
         GameObject.Instantiate(_prefabToSpawn, _spawnPoints[spawnIndex].transform.position, _spawnPoints[spawnIndex].transform.rotation);
+    }
+
+    private void UpdateObjectCounter()
+    {
+        _objectCounterText.text = _nbObjects.ToString();
     }
 
     // Update is called once per frame
