@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Spawnable : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private int _prefabID;
+    public int prefabID
+    {
+        get => _prefabID;
+        set => _prefabID = value;
+    }
 
     private void OnTriggerExit(Collider other)
     {
         if(other.gameObject.name.Equals("DestroyingPlatform"))
         {
             Destroy(gameObject.transform.parent.gameObject);
+            SceneManager.instance.RemoveOneObject(_prefabID);
         }
     }
 }

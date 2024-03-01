@@ -5,16 +5,31 @@ using UnityEngine;
 
 public class SceneManager : MonoBehaviour
 {
+    public static SceneManager instance { get; private set; }
+
     [SerializeField]
     private GameObject[] _prefabsToSpawn;
     List<Transform> _spawnPoints;
 
-    private List<int> _nbObjects;
+    private List<int> _nbTotalObjects;
+    private List<int> _nbCurrentObjects;
     private List<TextMeshProUGUI> _objectCounterTexts;
 
     private float _timer;
     [SerializeField]
     private float _spawnTimerInterval;
+
+    private void Awake()
+    {
+        if (!instance)
+        {
+            instance = this;
+        }
+        else 
+        { 
+            Destroy(gameObject);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -38,13 +53,19 @@ public class SceneManager : MonoBehaviour
         }
 
         // On peut utiliser _objectCounterTexts.Count car on a validé plus haut que c'est le même nombre que nb Prefabs
-        _nbObjects = new List<int>();
-        for(int i = 0; i < _objectCounterTexts.Count; ++i) 
-            _nbObjects.Add(0);
+        _nbTotalObjects = new List<int>();
+        _nbCurrentObjects = new List<int>();
+        for (int i = 0; i < _objectCounterTexts.Count; ++i)
+        {
+            _nbTotalObjects.Add(0);
+            _nbCurrentObjects.Add(0);
+        }
 
         // Initialiser tous les compteurs (texte) à zéro
-        for(int i = 0; i < _prefabsToSpawn.Length; ++i)
-            UpdateObjectCounter(i);
+        for (int i = 0; i < _prefabsToSpawn.Length; ++i)
+        {
+            UpdateObjectCounter(i); 
+        }
     }
 
     private void SpawnOneObject()
@@ -65,10 +86,10 @@ public class SceneManager : MonoBehaviour
         // Choix de l'objet à Spawn
         int spawnObjectIndex = Random.Range(0, _prefabsToSpawn.Length);
 
-        GameObject.Instantiate(_prefabsToSpawn[spawnObjectIndex], _spawnPoints[spawnPointIndex].transform.position, _spawnPoints[spawnPointIndex].transform.rotation);
-        ++_nbObjects[spawnObjectIndex];
-
-        UpdateObjectCounter(spawnObjectIndex);
+        
+        GameObject ob = Instantiate(_prefabsToSpawn[spawnObjectIndex], _spawnPoints[spawnPointIndex].transform.position, _spawnPoints[spawnPointIndex].transform.rotation);
+        ob.GetComponentInChildren<Spawnable>().prefabID = spawnObjectIndex;
+        AddOneObject(spawnObjectIndex);
     }
 
     private void UpdateObjectCounter(int pObjectIndex)
@@ -78,7 +99,20 @@ public class SceneManager : MonoBehaviour
             Debug.LogError("pObjectIndex n'est pas conforme au nombre d'objets");
         }
 
-        _objectCounterTexts[pObjectIndex].text = _nbObjects[pObjectIndex].ToString();
+        _objectCounterTexts[pObjectIndex].text = string.Format("Obj {0:00}: {1}({2})", pObjectIndex, _nbCurrentObjects[pObjectIndex], _nbTotalObjects[pObjectIndex]);
+    }
+
+    public void AddOneObject(int pID)
+    {
+        ++_nbTotalObjects[pID];
+        ++_nbCurrentObjects[pID];
+        UpdateObjectCounter(pID);
+    }
+
+    public void RemoveOneObject(int pID) 
+    {
+        --_nbCurrentObjects[pID];
+        UpdateObjectCounter(pID);
     }
 
     // Update is called once per frame
